@@ -8,6 +8,9 @@ let available = [];
 
 let players = ['X', 'O'];
 
+let human = 'O';
+let ai = 'X';
+
 let currentPlayer;
 
 /*Minmax vars*/
@@ -15,7 +18,7 @@ var boardString = [''];
 var score = 0;
 
 function setup() {
-    //currentPlayer = Math.floor(Math.random() * players.length);
+    // currentPlayer = Math.floor(Math.random() * players.length);
     currentPlayer = 0; //x starts (Human)
 
     for (let i = 0; i < 3; i++) {
@@ -36,7 +39,6 @@ function setup() {
         spots[i].addEventListener('click', playerClick);
     }
 }
-
 setup();
 
 function playerClick(e) {
@@ -61,12 +63,15 @@ function playerClick(e) {
                     checkWinner();
                     currentPlayer = (currentPlayer + 1) % players.length;
 
-                    computerTurn();
+                    // computerTurn();
+                    bestMove();
                 }
             }
         }
     }
 }
+
+/*
 
 function computerTurn() {
     if (currentPlayer == 1) {
@@ -79,6 +84,8 @@ function computerTurn() {
         // console.log(board);
         */
 
+
+        /*
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 let spot = board[i][j];
@@ -94,6 +101,8 @@ function computerTurn() {
         currentPlayer = (currentPlayer + 1) % players.length //update current player
     }
 }
+
+*/
 
 function equals3(a, b, c) {
     return (a == b && b == c && a != '');
@@ -145,7 +154,7 @@ function checkWinner() {
     if (winner == 'X') {
         return -1;
     }
- 
+
     if (winner == null) {
         return 0;
     }
@@ -169,6 +178,8 @@ function stringBoard() {
 */
 
 // boardString = stringBoard();
+
+/*
 function minmax(boardString, player) {
 
     if (checkWinner != null) {
@@ -184,13 +195,13 @@ function minmax(boardString, player) {
                 console.log('boardString');
                 var newBoard = boardString;
                 newBoard[i] = player;
-            
+
                 console.log(newBoard);
                 let scoreMove = [];
                 scoreMove[i] = minmax(newBoard, player);
 
                 console.log(scoreMove);
-                
+
                 // let scoreMove[i] = -self.minmax restart minmax function
 
                 if (scoreMove > score) {
@@ -203,6 +214,79 @@ function minmax(boardString, player) {
     return score;
     console.log(score);
 }
+*/
+
+
+function bestMove() {
+    let bestScore = -Infinity;
+    let move = [];
+
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            // let spot = board[i][j];
+
+            if (board[i][j] == '') {
+                board[i][j] = ai;
+                let score = miniMax(board, 0, true);
+                board[i][j] = '';
+                if (score > bestScore) {
+                    bestScore = score;
+                        move = [i, j];
+                }
+            }
+        }
+    }
+    board[move[0]][move[1]] = ai;
+    currentPlayer = human;
+}
+
+let scores = {  
+    X: +1,
+    O: -1,
+    tie: 0
+}
+
+function miniMax(board, depth, isMaximizing) {
+    let result = checkWinner();
+
+    if (result !== null) {
+        return scores[result];
+    }
+
+    if (isMaximizing) {
+        let bestScore = -Infinity
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] == '') {
+                    board[i][j] = ai;
+                    let score = miniMax(board, depth++, false);
+                    board[i][j] = '';
+
+                    bestScore = max(score, bestScore);
+                }
+            }
+        } 
+        return bestScore;
+
+    } else {
+        let bestScore = +Infinity
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] == '') {
+                    board[i][j] = human;
+                    let score = miniMax(board, depth++, true);
+                    board[i][j] = '';
+
+                    bestScore = min(score, bestScore)
+                }
+            }
+        }
+        return bestScore;
+    }
+}
+
 
 
 /*

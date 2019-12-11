@@ -120,7 +120,9 @@ function checkWinner() {
         if (equals3(board[i][0], board[i][1], board[i][2])) {
             winner = board[i][0];
             // console.log('horizon');
-            winnerTxt.innerHTML = 'horizon';
+            // winnerTxt.innerHTML = 'horizon';
+
+            return winner;
         }
     }
 
@@ -129,7 +131,9 @@ function checkWinner() {
         if (equals3(board[0][i], board[1][i], board[2][i])) {
             winner = board[0][i];
             // console.log('vertical');
-            winnerTxt.innerHTML = 'vertical';
+            // winnerTxt.innerHTML = 'vertical';
+
+            return winner;
         }
     }
 
@@ -137,13 +141,19 @@ function checkWinner() {
     if (equals3(board[0][0], board[1][1], board[2][2])) {
         winner = board[0][0];
         // console.log('diagonal');
-        winnerTxt.innerHTML = 'diagonal';
+        // winnerTxt.innerHTML = 'diagonal';
+
+        return winner;
+
     }
 
     if (equals3(board[0][2], board[1][1], board[2][0])) {
         winner = board[0][2];
         // console.log('diagonal');
-        winnerTxt.innerHTML = 'diagonal';
+        // winnerTxt.innerHTML = 'diagonal';
+
+        return winner;
+
     }
 
     let openSpots = 0;
@@ -158,15 +168,24 @@ function checkWinner() {
     if (winner == null && openSpots == 0) {
         winner = 'tie';
         winnerTxt.innerHTML = 'tie';
-    } 
+
+        return winner;
+    }
 
     return winner;
+
+    // if (winner == 'X') {
+    //     return +1
+    // } else if (winner == 'O') {
+    //     return -1
+    // } else if (winner == 'tie') {
+    //     return 0
+    // }
 }
 
 function bestMove() {
     let bestScore = -Infinity;
     let move = [];
-    let score = 0;
 
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -174,8 +193,6 @@ function bestMove() {
                 board[i][j] = ai;
                 let score = miniMax(board, 0, true);
                 board[i][j] = '';
-
-                // bestScore = max(score, bestScore);
 
                 if (score > bestScore) {
                     bestScore = score;
@@ -203,6 +220,7 @@ let scores = {
 function miniMax(board, depth, isMaximizing) {
     let result = checkWinner();
 
+    // return 1;
     if (result !== null) {
         return scores[result];
     }
@@ -223,7 +241,7 @@ function miniMax(board, depth, isMaximizing) {
         }
         return bestScore;
     } else {
-        let bestScore = Infinity;
+        let bestScore = +Infinity;
 
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {

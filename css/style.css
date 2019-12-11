@@ -25,7 +25,7 @@ main {
     margin: 12vh auto 0 auto;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     grid-gap: 0;
 
     width: 80vw;
@@ -34,12 +34,12 @@ main {
     max-height: 400px;
 }
 
-.grid .row {
+.grid div {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;  
+    grid-template-columns: 1fr 1fr 1fr;  
 }
 
-.grid .col {
+.grid .row div {
     display: flex;
 
     justify-content: center;
@@ -57,3 +57,25 @@ main {
     margin-top: 2rem;
     font-size: 4rem;
 }
+
+
+
+.grid .row:nth-child(1) div {
+    border-top: 0;
+}
+
+.grid .row:nth-child(3) div {
+    border-bottom: 0;
+}
+
+.grid .row div:first-child {
+    border-left: 0;
+}
+
+.grid .row div:last-child {
+    border-right: 0;
+}
+
+
+
+

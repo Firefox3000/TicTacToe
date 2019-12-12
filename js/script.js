@@ -148,7 +148,10 @@ function bestMove() {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] == '') {
                 board[i][j] = ai;
+                
                 let score = miniMax(board, 0, false);
+                // let score = minmax(board, 0, -Infinity, +Infinity, false); 
+
                 board[i][j] = '';
 
                 if (score > bestScore) {
@@ -184,6 +187,9 @@ let scores = {
     tie: 0
 }
 
+// var miniMaxChecks = 0;
+//60k
+
 function miniMax(board, depth, isMaximizing) {
     let result = checkWinner();
     if (result !== null) {
@@ -199,7 +205,7 @@ function miniMax(board, depth, isMaximizing) {
                     let score = miniMax(board, depth + 1, false);
                     board[i][j] = '';
 
-                    console.log('check');
+                    // miniMaxChecks++;
 
                     bestScore = Math.max(score, bestScore);
                 }
@@ -214,7 +220,7 @@ function miniMax(board, depth, isMaximizing) {
                     board[i][j] = human;
                     let score = miniMax(board, depth + 1, true);
 
-                    console.log('check');
+                    // miniMaxChecks++;
 
                     board[i][j] = '';
 
@@ -227,42 +233,8 @@ function miniMax(board, depth, isMaximizing) {
 }
 
 
-
 /*
-function minmax(position, depth, alpha, beta, maxPlayer) {
-    let winner = checkWinner;
-    if (winner != null) {
-
-        if (maxPlayer) {
-            maxEval = -Infinity;
-            	// for each
-
-            eval = minmax(child, depth-1, alpha, beta, false);
-            alpha = max(alpha, eval);
-            if (beta <= alpha) {
-                break;
-            }
-            return maxEval;
-
-
-        } else {
-            minEval = +Infinity;
-            // for each child of position
-            eval = minmax(child, depth-1, alpha, beta, true);
-            minEval = min(minEval, eval);
-            if (beta <= alpha) {
-                break;
-            }
-            return minEval;
-        }
-    }
-}
-*/
-
-
 // minmax(board, depth, -Infinity, +Infinity, isMaximizing) 
-
-
 
 function minmax(board, depth, alpha, beta, isMaximizing) {
     let result = checkWinner();
@@ -271,17 +243,19 @@ function minmax(board, depth, alpha, beta, isMaximizing) {
     }
 
     if (isMaximizing) {
-        maxEval = -Infinity;
-        
+        let maxEval = -Infinity;
+
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (board[i][j] == '') {
 
                     board[i][j] = ai;
-                    eval = minmax(board, depth + 1, alpha, beta, false);
+                    let eval = minmax(board, depth + 1, alpha, beta, false);
                     board[i][j] = '';
 
-                    alpha = Math.max(aplha, eval);
+                    miniMaxChecks++;
+
+                    alpha = Math.max(alpha, eval);
                     if (beta <= alpha) {
                         break;
                     }                
@@ -290,14 +264,17 @@ function minmax(board, depth, alpha, beta, isMaximizing) {
         }
         return maxEval
     } else {
-        maxEval = +Infinity;
+        let minEval = +Infinity;
         
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (board[i][j] == '') {
-
-                    eval = minmax(board, depth + 1, alpha, beta, true);
+                    board[i][j] = human;
+                    let eval = minmax(board, depth + 1, alpha, beta, true);
+                    board[i][j] = '';
                     
+                    miniMaxChecks++;
+
                     beta = Math.min(beta, eval);
                     if (beta <= alpha) {
                         break;
@@ -308,6 +285,8 @@ function minmax(board, depth, alpha, beta, isMaximizing) {
         return minEval
     }
 }
+
+
 
 /*
 let bestScore = -Infinity;

@@ -78,4 +78,45 @@ main {
 
 
 
+/* .grid .row:hover {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.grid .row:nth-child(1):hover .col:nth-child(1), col {
+    background-color: rgba(0, 0, 0, .1);
+} */
+
+.grid .col:hover {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+/*
+.grid:hover .row {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.grid .row:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+/*
+
+.grid .row:hover .col {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.grid .row .col:hover {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+/*
+.grid .row .col:nth-child(2):hover {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+.grid .row .col:nth-child(3):hover {
+    background-color: rgba(0, 0, 0, .1);
+} */
+
+
 

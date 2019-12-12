@@ -4,9 +4,6 @@ let board = [
     ['', '', '']
 ];
 
-// let available = [];
-// let players = ['X', 'O'];
-
 let human = 'O';
 let ai = 'X';
 
@@ -15,21 +12,10 @@ let currentPlayer = human;
 function setup() {
     // currentPlayer = Math.floor(Math.random() * players.length);
     // currentPlayer = 0; //x starts (Human)
-    // currentPlayer = human;
-
-    // create board array
-    /*
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            available.push([i, j]);
-        }
-    }
-    */
 
     //make board clickable
-    let spots = document.querySelectorAll('.col');
-    for (let i = 0; i < spots.length; i++) {
-        spots[i].addEventListener('click', playerClick);
+    for (let i = 0; i < document.querySelectorAll('.col').length; i++) {
+        document.querySelectorAll('.col')[i].addEventListener('click', playerClick)
     }
 }
 setup();
@@ -38,12 +24,21 @@ function playerClick(e) {
     if (currentPlayer == human) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                if (e.currentTarget == document.querySelectorAll('.row')[j].children[i] && board[i][j] == '') {
-                    // document.querySelectorAll('.row')[j].children[i].innerHTML = players[currentPlayer];
+                if (e.currentTarget == document.querySelectorAll('.row')[i].children[j] && board[i][j] == '') {
 
                     // update board and screen 
-                    document.querySelectorAll('.row')[j].children[i].innerHTML = human;
+                    document.querySelectorAll('.row')[i].children[j].innerHTML = human;
                     board[i][j] = human;
+
+                    let x = checkWinner()
+                    if (x == 'X' || x == 'O' || x == 'tie') {
+                        if (x == 'tie') {
+                            document.querySelector('.winner').innerHTML = 'tie';
+                        } else {
+                            document.querySelector('.winner').innerHTML = 'Winner: ' + x;
+                        }
+                        return
+                    }
 
                     currentPlayer = ai;
                     bestMove();
@@ -57,19 +52,7 @@ function playerClick(e) {
                             available.splice(c, 1);
                         }
                     }
-
-                    // console.log(available);
                     */
-
-                    // console.log(board);
-
-                    // checkWinner();
-
-                    // computerTurn();
-                    // bestMove();
-
-
-                    return
                 }
             }
         }
@@ -113,26 +96,17 @@ function equals3(a, b, c) {
 
 function checkWinner() {
     let winner = null;
-    let winnerTxt = document.querySelector('.winner');
 
-    //horizontal
+    //horizontal && vertical
     for (let i = 0; i < 3; i++) {
         if (equals3(board[i][0], board[i][1], board[i][2])) {
             winner = board[i][0];
-            // console.log('horizon');
-            // winnerTxt.innerHTML = 'horizon';
-
             return winner;
         }
-    }
 
-    //vertical
-    for (let i = 0; i < 3; i++) {
+        //vertical
         if (equals3(board[0][i], board[1][i], board[2][i])) {
             winner = board[0][i];
-            // console.log('vertical');
-            // winnerTxt.innerHTML = 'vertical';
-
             return winner;
         }
     }
@@ -140,20 +114,12 @@ function checkWinner() {
     //diagonal
     if (equals3(board[0][0], board[1][1], board[2][2])) {
         winner = board[0][0];
-        // console.log('diagonal');
-        // winnerTxt.innerHTML = 'diagonal';
-
         return winner;
-
     }
 
     if (equals3(board[0][2], board[1][1], board[2][0])) {
         winner = board[0][2];
-        // console.log('diagonal');
-        // winnerTxt.innerHTML = 'diagonal';
-
         return winner;
-
     }
 
     let openSpots = 0;
@@ -167,31 +133,22 @@ function checkWinner() {
 
     if (winner == null && openSpots == 0) {
         winner = 'tie';
-        winnerTxt.innerHTML = 'tie';
-
         return winner;
     }
 
     return winner;
-
-    // if (winner == 'X') {
-    //     return +1
-    // } else if (winner == 'O') {
-    //     return -1
-    // } else if (winner == 'tie') {
-    //     return 0
-    // }
 }
+
 
 function bestMove() {
     let bestScore = -Infinity;
-    let move = [];
+    let move;
 
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] == '') {
                 board[i][j] = ai;
-                let score = miniMax(board, 0, true);
+                let score = miniMax(board, 0, false);
                 board[i][j] = '';
 
                 if (score > bestScore) {
@@ -206,34 +163,43 @@ function bestMove() {
     }
 
     board[move.i][move.j] = ai;
-    document.querySelectorAll('.row')[move.j].children[move.i].innerHTML = ai;
+    document.querySelectorAll('.row')[move.i].children[move.j].innerHTML = ai;
 
     currentPlayer = human;
+
+    let x = checkWinner()
+    if (x == 'X' || x == 'O' || x == 'tie') {
+        if (x == 'tie') {
+            document.querySelector('.winner').innerHTML = 'tie';
+        } else {
+            document.querySelector('.winner').innerHTML = 'Winner: ' + x;
+        }
+        return
+    }
 }
 
 let scores = {
-    X: +1,
+    X: 1,
     O: -1,
     tie: 0
 }
 
 function miniMax(board, depth, isMaximizing) {
     let result = checkWinner();
-
-    // return 1;
     if (result !== null) {
         return scores[result];
     }
 
     if (isMaximizing) {
         let bestScore = -Infinity;
-
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (board[i][j] == '') {
                     board[i][j] = ai;
-                    let score = miniMax(board, depth++, false);
+                    let score = miniMax(board, depth + 1, false);
                     board[i][j] = '';
+
+                    console.log('check');
 
                     bestScore = Math.max(score, bestScore);
                 }
@@ -242,15 +208,17 @@ function miniMax(board, depth, isMaximizing) {
         return bestScore;
     } else {
         let bestScore = +Infinity;
-
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (board[i][j] == '') {
                     board[i][j] = human;
-                    let score = miniMax(board, depth++, true);
+                    let score = miniMax(board, depth + 1, true);
+
+                    console.log('check');
+
                     board[i][j] = '';
 
-                    bestScore = Math.min(score, bestScore)
+                    bestScore = Math.min(score, bestScore);
                 }
             }
         }
@@ -259,24 +227,6 @@ function miniMax(board, depth, isMaximizing) {
 }
 
 
-
-/*
-function minmax(board, player) {
-    for (let i = 0; i < 9; i++) {
-        if (board[i] == player.blanc) {
-            var newBoard = board;
-            newBoard[i] = player;
-            let scoreMove = -self.minmax(newBoard, opponent)
-
-            if (scoreMove > score) {
-                score = scoreMove;
-                move = 1;
-            }
-        }
-    }
-    return score;
-}
-*/
 
 /*
 function minmax(position, depth, alpha, beta, maxPlayer) {
@@ -307,4 +257,70 @@ function minmax(position, depth, alpha, beta, maxPlayer) {
         }
     }
 }
+*/
+
+
+// minmax(board, depth, -Infinity, +Infinity, isMaximizing) 
+
+
+
+function minmax(board, depth, alpha, beta, isMaximizing) {
+    let result = checkWinner();
+    if (result !== null) {
+        return scores[result];
+    }
+
+    if (isMaximizing) {
+        maxEval = -Infinity;
+        
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] == '') {
+
+                    board[i][j] = ai;
+                    eval = minmax(board, depth + 1, alpha, beta, false);
+                    board[i][j] = '';
+
+                    alpha = Math.max(aplha, eval);
+                    if (beta <= alpha) {
+                        break;
+                    }                
+                }
+            }
+        }
+        return maxEval
+    } else {
+        maxEval = +Infinity;
+        
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] == '') {
+
+                    eval = minmax(board, depth + 1, alpha, beta, true);
+                    
+                    beta = Math.min(beta, eval);
+                    if (beta <= alpha) {
+                        break;
+                    }                
+                }
+            }
+        }
+        return minEval
+    }
+}
+
+/*
+let bestScore = -Infinity;
+for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+        if (board[i][j] == '') {
+            board[i][j] = ai;
+            let score = miniMax(board, depth + 1, false);
+            board[i][j] = '';
+
+            bestScore = Math.max(score, bestScore);
+        }
+    }
+}
+return bestScore;
 */

@@ -22,6 +22,8 @@ let currentPlayer = human;
             ['', '', '']
         ];
 
+        document.querySelector('.winner').innerHTML = '.';
+
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 document.querySelectorAll('.row')[i].children[j].innerHTML = '';

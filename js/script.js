@@ -9,33 +9,27 @@ let ai = 'O';
 
 let currentPlayer = human;
 
-    //make board clickable
-    for (let i = 0; i < document.querySelectorAll('.col').length; i++) {
-        document.querySelectorAll('.col')[i].addEventListener('click', playerClick)
+//make board clickable
+for (let i = 0; i < document.querySelectorAll('.col').length; i++) {
+    document.querySelectorAll('.col')[i].addEventListener('click', playerClick)
+}
+
+//restart function
+document.querySelector('.restart').addEventListener('click', () => {
+    board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
+
+    document.querySelector('.winner').innerHTML = '.';
+
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            document.querySelectorAll('.row')[i].children[j].innerHTML = '';
+        }
     }
-
-
-    document.querySelector('.restart').addEventListener('click', () => {
-        board = [
-            ['', '', ''],
-            ['', '', ''],
-            ['', '', '']
-        ];
-
-        document.querySelector('.winner').innerHTML = '.';
-
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                document.querySelectorAll('.row')[i].children[j].innerHTML = '';
-            }
-        }        
-    });
-
-    // function setup() {
-    // currentPlayer = Math.floor(Math.random() * players.length);
-    // currentPlayer = 0; //x starts (Human)
-// } 
-// setup();
+});
 
 function playerClick(e) {
     if (currentPlayer == human) {
@@ -80,6 +74,18 @@ function playerClick(e) {
                         board[spot[0]][spot[1]] = ai;
                         document.querySelectorAll('.row')[spot[0]].children[spot[1]].innerHTML = ai;
 
+                        checkWinner(board);
+
+                        let x = checkWinner()
+                        if (x == 'X' || x == 'O' || x == 'tie') {
+                            if (x == 'tie') {
+                                document.querySelector('.winner').innerHTML = 'tie';
+                            } else {
+                                document.querySelector('.winner').innerHTML = 'Winner: ' + x;
+                            }
+                            return
+                        }
+
                         currentPlayer = human;
                     }
                 }
@@ -104,9 +110,6 @@ function computerTurn() {
 document.querySelector('#slider').addEventListener('input', () => {
     document.querySelector('.sliderVal').innerHTML = Math.round(document.querySelector('#slider').value * 100);
 });
-
-
-
 
 function equals3(a, b, c) {
     return (a == b && b == c && a != '');

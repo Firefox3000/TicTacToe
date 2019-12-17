@@ -12,7 +12,7 @@ body {
 main {
     width: 100vw;
     height: auto;
-    
+
     display: flex;
     flex-direction: column;
 
@@ -36,7 +36,7 @@ main {
 
 .grid div {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .grid .row div {
@@ -47,11 +47,11 @@ main {
 
     border-color: black;
     border-width: 2px;
-    border-style: solid; 
+    border-style: solid;
 
     font-size: 3rem;
     font-weight: 400;
-} 
+}
 
 .winner {
     margin-top: 2rem;
@@ -90,33 +90,54 @@ main {
     background-color: rgba(0, 0, 0, .1);
 }
 
-/*
-.grid:hover .row {
-    background-color: rgba(0, 0, 0, .1);
+
+.slidecontainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.grid .row:hover {
-    background-color: rgba(0, 0, 0, 1);
+.slidecontainer p {
+    margin: 0 .8rem;
 }
 
-/*
 
-.grid .row:hover .col {
-    background-color: rgba(0, 0, 0, .1);
+/* input[type=range] */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 200px;
+    height: .6rem;
+    border-radius: 6px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 1;
+    transition: all .2s ease;
 }
 
-.grid .row .col:hover {
-    background-color: rgba(0, 0, 0, 1);
+/* Browser support */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.2rem;
+    height: 1.2rem;
+    background: black;
+    cursor: pointer;
+    border-radius: 50%;
 }
 
-/*
-.grid .row .col:nth-child(2):hover {
-    background-color: rgba(0, 0, 0, .1);
+.slider::-webkit-slider-thumb:hover {
+    opacity: .8;
 }
 
-.grid .row .col:nth-child(3):hover {
-    background-color: rgba(0, 0, 0, .1);
-} */
+.restart {
+    background-color: black;
+    padding: .6rem 1.4rem;
+    margin-bottom: 2rem;
+}
 
-
-
+svg {
+    fill: white;
+    width: 2rem;
+    height: auto;
+}

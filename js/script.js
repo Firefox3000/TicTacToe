@@ -4,21 +4,36 @@ let board = [
     ['', '', '']
 ];
 
-let human = 'O';
-let ai = 'X';
+let human = 'X';
+let ai = 'O';
 
 let currentPlayer = human;
-
-function setup() {
-    // currentPlayer = Math.floor(Math.random() * players.length);
-    // currentPlayer = 0; //x starts (Human)
 
     //make board clickable
     for (let i = 0; i < document.querySelectorAll('.col').length; i++) {
         document.querySelectorAll('.col')[i].addEventListener('click', playerClick)
     }
-}
-setup();
+
+
+    document.querySelector('.restart').addEventListener('click', () => {
+        board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                document.querySelectorAll('.row')[i].children[j].innerHTML = '';
+            }
+        }        
+    });
+
+    // function setup() {
+    // currentPlayer = Math.floor(Math.random() * players.length);
+    // currentPlayer = 0; //x starts (Human)
+// } 
+// setup();
 
 function playerClick(e) {
     if (currentPlayer == human) {
@@ -39,20 +54,32 @@ function playerClick(e) {
                         }
                         return
                     }
-
                     currentPlayer = ai;
-                    bestMove();
 
-                    /*
-                    //update available array
-                    let index = [i, j];
+                    if (document.querySelector('#slider').value >= Math.random()) {
+                        // ai move
+                        bestMove();
+                    } else {
+                        //random move
 
-                    for (let c = 0; c < available.length; c++) {
-                        if (JSON.stringify(available[c]) == JSON.stringify(index)) {
-                            available.splice(c, 1);
+                        //look for empty spots
+                        let available = [];
+                        for (let i = 0; i < 3; i++) {
+                            for (let j = 0; j < 3; j++) {
+                                if (board[i][j] == '') {
+                                    available.push([i, j]);
+                                }
+                            }
                         }
+                        //choose empty spot
+                        let spot = available[Math.floor(Math.random() * available.length)];
+
+                        // board and visual
+                        board[spot[0]][spot[1]] = ai;
+                        document.querySelectorAll('.row')[spot[0]].children[spot[1]].innerHTML = ai;
+
+                        currentPlayer = human;
                     }
-                    */
                 }
             }
         }
@@ -69,26 +96,15 @@ function computerTurn() {
         let spot = available.splice(index, 1)[0];
         board[spot[0]][spot[1]] = players[currentPlayer];
         // console.log(board);
-        */
-
-
-/*
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                let spot = board[i][j];
-
-                if (spot == players[0]) {
-                    document.querySelectorAll('.row')[j].children[i].innerHTML = 'X';
-                } else if (spot == players[1]) {
-                    document.querySelectorAll('.row')[j].children[i].innerHTML = 'O';
-                }
-            }
-        }
-        checkWinner();
-        currentPlayer = (currentPlayer + 1) % players.length //update current player
-    }
-}
 */
+
+
+document.querySelector('#slider').addEventListener('input', () => {
+    document.querySelector('.sliderVal').innerHTML = Math.round(document.querySelector('#slider').value * 100);
+});
+
+
+
 
 function equals3(a, b, c) {
     return (a == b && b == c && a != '');
@@ -135,7 +151,6 @@ function checkWinner() {
         winner = 'tie';
         return winner;
     }
-
     return winner;
 }
 
@@ -148,7 +163,7 @@ function bestMove() {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] == '') {
                 board[i][j] = ai;
-                
+
                 let score = miniMax(board, 0, false);
                 // let score = minmax(board, 0, -Infinity, +Infinity, false); 
 
@@ -182,8 +197,8 @@ function bestMove() {
 }
 
 let scores = {
-    X: 1,
-    O: -1,
+    O: 1,
+    X: -1,
     tie: 0
 }
 
@@ -205,8 +220,6 @@ function miniMax(board, depth, isMaximizing) {
                     let score = miniMax(board, depth + 1, false);
                     board[i][j] = '';
 
-                    // miniMaxChecks++;
-
                     bestScore = Math.max(score, bestScore);
                 }
             }
@@ -220,8 +233,6 @@ function miniMax(board, depth, isMaximizing) {
                     board[i][j] = human;
                     let score = miniMax(board, depth + 1, true);
 
-                    // miniMaxChecks++;
-
                     board[i][j] = '';
 
                     bestScore = Math.min(score, bestScore);
@@ -234,6 +245,8 @@ function miniMax(board, depth, isMaximizing) {
 
 
 /*
+//Mini max with alpha beta pruning
+
 // minmax(board, depth, -Infinity, +Infinity, isMaximizing) 
 
 function minmax(board, depth, alpha, beta, isMaximizing) {
@@ -285,21 +298,4 @@ function minmax(board, depth, alpha, beta, isMaximizing) {
         return minEval
     }
 }
-
-
-
-/*
-let bestScore = -Infinity;
-for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-        if (board[i][j] == '') {
-            board[i][j] = ai;
-            let score = miniMax(board, depth + 1, false);
-            board[i][j] = '';
-
-            bestScore = Math.max(score, bestScore);
-        }
-    }
-}
-return bestScore;
 */

@@ -36,20 +36,12 @@ function playerClick(e) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (e.currentTarget == document.querySelectorAll('.row')[i].children[j] && board[i][j] == '') {
-
                     // update board and screen 
                     document.querySelectorAll('.row')[i].children[j].innerHTML = human;
                     board[i][j] = human;
 
-                    let x = checkWinner()
-                    if (x == 'X' || x == 'O' || x == 'tie') {
-                        if (x == 'tie') {
-                            document.querySelector('.winner').innerHTML = 'tie';
-                        } else {
-                            document.querySelector('.winner').innerHTML = 'Winner: ' + x;
-                        }
-                        return
-                    }
+                    checkWinner(true);
+
                     currentPlayer = ai;
 
                     if (document.querySelector('#slider').value >= Math.random()) {
@@ -74,17 +66,7 @@ function playerClick(e) {
                         board[spot[0]][spot[1]] = ai;
                         document.querySelectorAll('.row')[spot[0]].children[spot[1]].innerHTML = ai;
 
-                        checkWinner(board);
-
-                        let x = checkWinner()
-                        if (x == 'X' || x == 'O' || x == 'tie') {
-                            if (x == 'tie') {
-                                document.querySelector('.winner').innerHTML = 'tie';
-                            } else {
-                                document.querySelector('.winner').innerHTML = 'Winner: ' + x;
-                            }
-                            return
-                        }
+                        checkWinner(true);
 
                         currentPlayer = human;
                     }
@@ -93,18 +75,6 @@ function playerClick(e) {
         }
     }
 }
-
-/*
-function computerTurn() {
-    if (currentPlayer == 1) {
-        minmax();
-        /*
-        let index = Math.floor(Math.random() * available.length); //pick random spot on board
-
-        let spot = available.splice(index, 1)[0];
-        board[spot[0]][spot[1]] = players[currentPlayer];
-        // console.log(board);
-*/
 
 
 document.querySelector('#slider').addEventListener('input', () => {
@@ -115,32 +85,27 @@ function equals3(a, b, c) {
     return (a == b && b == c && a != '');
 }
 
-function checkWinner() {
+function checkWinner(draw) {
     let winner = null;
-
     //horizontal && vertical
     for (let i = 0; i < 3; i++) {
         if (equals3(board[i][0], board[i][1], board[i][2])) {
             winner = board[i][0];
-            return winner;
         }
 
         //vertical
         if (equals3(board[0][i], board[1][i], board[2][i])) {
             winner = board[0][i];
-            return winner;
         }
     }
 
     //diagonal
     if (equals3(board[0][0], board[1][1], board[2][2])) {
         winner = board[0][0];
-        return winner;
     }
 
     if (equals3(board[0][2], board[1][1], board[2][0])) {
         winner = board[0][2];
-        return winner;
     }
 
     let openSpots = 0;
@@ -154,7 +119,17 @@ function checkWinner() {
 
     if (winner == null && openSpots == 0) {
         winner = 'tie';
-        return winner;
+    }
+
+    if (draw) {
+        if (winner == 'X' || winner == 'O' || winner == 'tie') {
+            if (winner == 'tie') {
+                document.querySelector('.winner').innerHTML = 'tie';
+            } else {
+                document.querySelector('.winner').innerHTML = 'Winner: ' + winner;
+            }
+            return
+        }
     }
     return winner;
 }
@@ -190,15 +165,7 @@ function bestMove() {
 
     currentPlayer = human;
 
-    let x = checkWinner()
-    if (x == 'X' || x == 'O' || x == 'tie') {
-        if (x == 'tie') {
-            document.querySelector('.winner').innerHTML = 'tie';
-        } else {
-            document.querySelector('.winner').innerHTML = 'Winner: ' + x;
-        }
-        return
-    }
+    checkWinner(true);
 }
 
 let scores = {
@@ -211,7 +178,7 @@ let scores = {
 //60k
 
 function miniMax(board, depth, isMaximizing) {
-    let result = checkWinner();
+    let result = checkWinner(false);
     if (result !== null) {
         return scores[result];
     }
@@ -237,7 +204,6 @@ function miniMax(board, depth, isMaximizing) {
                 if (board[i][j] == '') {
                     board[i][j] = human;
                     let score = miniMax(board, depth + 1, true);
-
                     board[i][j] = '';
 
                     bestScore = Math.min(score, bestScore);
@@ -255,7 +221,7 @@ function miniMax(board, depth, isMaximizing) {
 // minmax(board, depth, -Infinity, +Infinity, isMaximizing) 
 
 function minmax(board, depth, alpha, beta, isMaximizing) {
-    let result = checkWinner();
+    let result = checkWinner(false);
     if (result !== null) {
         return scores[result];
     }

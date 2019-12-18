@@ -22,6 +22,7 @@ document.querySelector('.restart').addEventListener('click', () => {
         ['', '', '']
     ];
 
+    currentPlayer = human;
     document.querySelector('.winner').innerHTML = '.';
 
     for (let i = 0; i < 3; i++) {
@@ -41,41 +42,39 @@ function playerClick(e) {
                     board[i][j] = human;
 
                     checkWinner(true);
-
                     currentPlayer = ai;
 
-                    if (document.querySelector('#slider').value >= Math.random()) {
-                        // ai move
-                        bestMove();
-                    } else {
-                        //random move
-
-                        //look for empty spots
-                        let available = [];
-                        for (let i = 0; i < 3; i++) {
-                            for (let j = 0; j < 3; j++) {
-                                if (board[i][j] == '') {
-                                    available.push([i, j]);
-                                }
+                    let available = [];
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            if (board[i][j] == '') {
+                                available.push([i, j]);
                             }
                         }
-                        //choose empty spot
-                        let spot = available[Math.floor(Math.random() * available.length)];
-
-                        // board and visual
-                        board[spot[0]][spot[1]] = ai;
-                        document.querySelectorAll('.row')[spot[0]].children[spot[1]].innerHTML = ai;
-
-                        checkWinner(true);
-
-                        currentPlayer = human;
                     }
+
+                    if (available.length > 0) {
+                        if (document.querySelector('#slider').value >= Math.random()) {
+                            // ai move
+                            bestMove();
+                        } else {
+                            //random move
+                            console.log('random');
+                            //choose empty spot
+                            let spot = available[Math.floor(Math.random() * available.length)];
+
+                            // board and visual
+                            board[spot[0]][spot[1]] = ai;
+                            document.querySelectorAll('.row')[spot[0]].children[spot[1]].innerHTML = ai;
+                        }
+                    }
+                    checkWinner(true);
+                    currentPlayer = human;
                 }
             }
         }
     }
 }
-
 
 document.querySelector('#slider').addEventListener('input', () => {
     document.querySelector('.sliderVal').innerHTML = Math.round(document.querySelector('#slider').value * 100);
